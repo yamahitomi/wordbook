@@ -1,0 +1,12 @@
+<h1>ユーザー作成画面</h1>
+<div>
+  <%= form_for(@user) do |f| %>
+  <%= render 'layouts/error_messages', model: f.object %>
+  <ul style="list-style: none;">
+    <li><%= f.label :name, "ユーザー名" %><%= f.text_field :name %></li>
+    <li><%= f.label :password, "パスワード" %><%= f.password_field :password %></li>
+    <li><%= f.label :password_confirmation, "パスワード再入力" %><%= f.password_field :password_confirmation %></li>
+  </ul>
+  <%= f.submit "作成" %>
+  <% end %>
+</div>

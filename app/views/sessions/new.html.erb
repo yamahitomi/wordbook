@@ -1,0 +1,17 @@
+<p><%= flash[:danger] %></p>
+<h1>Login</h1>
+<div>
+  <%= form_for(:session, url: login_path) do |f| %>
+
+  <%= f.label :name %>
+  <%= f.text_field :name %>
+
+  <%= f.label :password %>
+  <%= f.password_field :password %>
+
+  <%= f.submit "Login" %>
+
+  <% end %>
+
+  <p><%= link_to "新しいユーザーを登録", new_user_path %></p>
+</div>
