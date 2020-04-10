@@ -3,6 +3,8 @@ window.onload = function(){
   let Qcnt = 1;
   let allQuestionDate = [];
 
+  //Ajax通信
+  //Jsondataを受け取る
   const fetchAllQuestions = () => {
     const DATE_URL = '/questions.json'
     return fetch(DATE_URL)
@@ -15,11 +17,11 @@ window.onload = function(){
     allQuestionDate = allQuestion
     correct_answer = allQuestionDate[Qcnt][2]
     outputQuestion(allQuestionDate, Qcnt);
-    //何問目かの表示
+    //何問目か表示
     document.getElementById("span1").textContent = Qcnt
   })
 
-  // 【buttun押下時の処理】
+  // **【buttun押下時の処理】**
   document.getElementById("button").onclick = function() {
     
     correct_answer = allQuestionDate[Qcnt][2]
@@ -30,14 +32,14 @@ window.onload = function(){
     // 選択状態の値(value)を取得
     var answer = radioNodeList.value ;
     checkAnswer(answer, correct_answer)
+
     Qcnt ++;
     document.getElementById("span1").textContent = Qcnt
 
-    if (50 == 50){
+    if (Qcnt == 50){
       
-      //ユーザーの持つ正解率より取得した正解率が高い場合更新
-      window.sessionStorage.setItem('correct_answer_count', 49);
-
+      //Ajax通信
+      //セッションの正解数をcontroller側へ渡す
       var myHeaders = new Headers({ "Content-type" : "application/json" });
       myHeaders.append('X-CSRF-Token', "P7qiN53QfDGbHjCXdV8BzL8McxgT1lBkXE3WpjP7taydWrF7d+xkZi+b9fG9TC13IMy61jmGK8pzhmdAoHjlZA==");
       fetch('/users/api',{
@@ -55,6 +57,7 @@ window.onload = function(){
       });
     }
 
+    //radioボタンの初期化
     const el = document.getElementById('description_id');
     el.innerHTML = '';
     
@@ -62,7 +65,7 @@ window.onload = function(){
   } 
 };
 
- // 【問題と解答の出力】
+ // **【問題と解答の出力】**
 const outputQuestion = (jsonData, Qcnt) => {
   const question = document.getElementById('one_question');
   const similar_word = document.getElementById('similar_word');
@@ -72,7 +75,7 @@ const outputQuestion = (jsonData, Qcnt) => {
   generateAnswers(jsonData, Qcnt)
 }
 
-// 【回答のradioボタンの選択肢3つを作成する】
+// **【回答のradioボタンの選択肢3つを作成する】**
 const generateAnswers = (jsonData, Qcnt) => {
   const descriptionArr = [];
   const descriptionEl = document.getElementById('description_id');
@@ -81,31 +84,36 @@ const generateAnswers = (jsonData, Qcnt) => {
   correct_answer = jsonData[Qcnt][2]
   descriptionArr.push(correct_answer);
 
-    //jsonDateをArrayにセット
-    for (var i = 0; i < jsonData.length; i++) {
-      description = jsonData[i][2]
-      descriptionArrAll.push(description);
-    }
+  //jsonDate50件から回答のみをArrayにセット
+  for (var i = 0; i < jsonData.length; i++) {
+    description = jsonData[i][2]
+    descriptionArrAll.push(description);
+  }
     
-    //descriptionArrAllからランダムで2解答追加(かぶらないもの)
-    random = descriptionArrAll.slice().sort(function(){ return Math.random() - 0.5; }).slice(0, 2)
-    for (var i = 0; i < random.length; i++) {
-      description = random[i]
-      if (descriptionArr.indexOf(random) == -1){
-        descriptionArr.push(description);
-      } 
-    }
+  //descriptionArrからランダムで2解答追加(かぶらないもの)
+  const copy = descriptionArrAll.slice();
+  random = [...Array(3)].map(() => copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
 
-    //radioボタンの作成 function
-    descriptionArr.forEach(descriptionChild => {
-      const radio = createRadio("description", descriptionChild)
-      const radio_label = document.createElement('label')
-      descriptionEl.appendChild(radio_label); //ない
-      radio_label.appendChild(radio)
-      radio_label.appendChild(document.createTextNode(descriptionChild))
-    });
+  for (var i = 0; i < random.length; i++) {
+    description = random[i]
+    if (correct_answer !== description){
+      descriptionArr.push(description);
+      if (descriptionArr.length == 3){
+        break;
+      }
+    } 
+  }
+
+  // **【選択肢３つのradioボタンの作成】**
+  descriptionArr.forEach(descriptionChild => {
+    const radio = createRadio("description", descriptionChild)
+    const radio_label = document.createElement('label')
+    descriptionEl.appendChild(radio_label); //ない
+    radio_label.appendChild(radio)
+    radio_label.appendChild(document.createTextNode(descriptionChild))
+  });
 }
-  // 【radioボタン要素作成】
+  // **【radioボタン要素作成】**
   const createRadio = (name, value) => {
     const input_radio = document.createElement('input');
     input_radio.type = "radio";
@@ -114,10 +122,8 @@ const generateAnswers = (jsonData, Qcnt) => {
   return input_radio
 }
 
-// 【回答をチェックする】
+// **【回答をチェックする】**
 const checkAnswer = (answer ,correct_answer) => {
-  //   return question.answer == answer ? "正解" : "不正解"
-  console.log(answer,correct_answer)
   if (answer === correct_answer){
     // 正解数のセッションに +1をする
     correct_answer_count = window.sessionStorage.getItem('correct_answer_count');

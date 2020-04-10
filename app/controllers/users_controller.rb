@@ -18,12 +18,10 @@ class UsersController < ApplicationController
   def api
     user = User.find(current_user.id)
     answer_count = params[:answer_count].to_i
-    if answer_count.present?
-      correct_answer_rate = (answer_count / 50.to_f) * 100 
-      if correct_answer_rate > user.highest_rate
-        user.highest_rate = correct_answer_rate
-        user.save :validate => false
-      end
+    correct_answer_rate = (answer_count / 50.to_f) * 100
+    if user.highest_rate.nil? || correct_answer_rate > user.highest_rate
+      user.highest_rate = correct_answer_rate
+      user.save :validate => false
     end
   end
 
