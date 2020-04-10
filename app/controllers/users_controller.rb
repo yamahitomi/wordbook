@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  skip_before_action :verify_authenticity_token
 
   def new
     @user = User.new
@@ -14,7 +15,16 @@ class UsersController < ApplicationController
     end
   end
 
-  def show
+  def api
+    user = User.find(current_user.id)
+    answer_count = params[:answer_count].to_i
+    if answer_count.present?
+      correct_answer_rate = (answer_count / 50.to_f) * 100 
+      if correct_answer_rate > user.highest_rate
+        user.highest_rate = correct_answer_rate
+        user.save :validate => false
+      end
+    end
   end
 
   def user_params
