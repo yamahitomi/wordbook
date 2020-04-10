@@ -1,0 +1,12 @@
+<p><%= flash[:danger] %></p>
+<h1>Login</h1>
+<div>
+  <%= form_for(:session, url: login_path) do |f| %>
+    <ul style="list-style: none;">
+      <li><%= f.label :name %><%= f.text_field :name %></li>
+      <li><%= f.label :password %><%= f.password_field :password %></li>
+    </ul>
+    <%= f.submit "Login" %>
+  <% end %>
+  <p><%= link_to "新しいユーザーを登録", new_user_path %></p>
+</div>

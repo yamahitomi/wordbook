@@ -1,0 +1,58 @@
+<p><%= flash[:danger] %></p>
+<p><%= flash[:success] %></p>
+<%= link_to 'Main Menu', wordbooks_path %>
+<h1>単語マスタメンテナンス</h1>
+
+<div>
+  <h3>新規登録</h3>
+  <%= form_for [:admin, @question] do |f| %>
+    <%= render 'layouts/error_messages', model: f.object %>
+    <ul style = "list-style: none;">
+      <li><%= f.label :question, "問題：" %><%= f.text_field :question %></li>
+      <li><%= f.label :description, "回答：" %><%= f.text_field :description %></li>
+
+      <%= f.fields_for :question_similar_words, @question.question_similar_words.build do |i| %>
+        <li><%= i.label :similar_word, "類似単語：" %><%= i.text_field :similar_word %></li>
+      <% end %>
+    <ul>
+    <%= f.submit "作成" %>
+  <% end %>
+</div>
+
+<div>
+  <h4>検索</h4>
+  <%= form_with(scope: :search, url: admin_questions_path, method: :get, local: true) do |f| %>
+    <ul style = "list-style: none;">
+      <li><%= f.label(:question, "問題")%><%= f.text_field :question, value: @search_params[:question]%></li>
+      <li><%= f.label(:description, "回答")%><%= f.text_field :description, value: @search_params[:description]%></li>
+    </ul>
+    <%= f.submit "検索" %>
+  <% end %>
+</div>
+
+<div>
+  <h3>質問一覧</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>質問</th>
+        <th>回答</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @questions.each do |question| %>
+        <tr>
+          <td><%= question.question %></td>
+          <td><%= question.description %></td>
+
+          <% question.question_similar_words.each do |similar_word| %>
+            <td><%= similar_word.similar_word %></td>
+          <% end %>
+
+          <td><%= link_to '編集', admin_questions_path(id: question.id) %></td>
+          <td><%= link_to '削除', admin_question_path(id: question.id), method: :delete, data: {confirm: '削除してもよろしいですか?'} %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
