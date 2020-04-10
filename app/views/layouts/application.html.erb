@@ -5,12 +5,13 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_pack_tag 'application' %>
   </head>
 
   <body>
   <% if logged_in? %>
-    <%= button_to "Log out", logout_path, method: "delete" %>
+    <%= link_to "Log out", logout_path, method: "delete" %>
   <% else %>
     <p><%= link_to "Log in", login_path %></p>
   <% end %>

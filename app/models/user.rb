@@ -1,18 +1,16 @@
 class User < ApplicationRecord
-  validate :name_presence
-  validate :password_presence
+  validates :name, presence: true
+  validates :password, presence: true
   validates :name, uniqueness: { message: "そのユーザーは既に存在します"}
 
   has_secure_password
 
-  private
+  def correct_answer_count(user)
+    (user.highest_rate.to_f / 100) * 50
+  end 
 
-  def name_presence
-    return if name.present?
-    errors.add(:base, "名前が未入力です")
-  end
-  def password_presence
-    return if password.present? && password_confirmation.present?
-    errors.add(:base, "パスワードが未入力です")
+  def get_rank(user)
+    ranked_ids = User.all.order('highest_rate desc').select(:id).map(&:id)
+    ranked_ids.index(user.id) + 1
   end
 end
