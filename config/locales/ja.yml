@@ -8,6 +8,7 @@ ja:
         name: 名前
         password: パスワード
         password_confirmation: 確認用パスワード
+        password_digest: パスワード
     errors:
       models:
         user:

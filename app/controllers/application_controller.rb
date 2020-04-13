@@ -1,5 +1,11 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :null_session
   include SessionsHelper
-  protect_from_forgery
+  protect_from_forgery with: :exception
+
+  def logged_in_user
+    unless logged_in?
+      flash[:danger] = "ログインしてください"
+      redirect_to login_path
+    end
+  end
 end
