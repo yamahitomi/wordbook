@@ -14,8 +14,9 @@ class Admin::QuestionsController < ApplicationController
   end
 
   def create
+
     @question = Question.new(question_params)
-    
+
     if @question.save
       flash[:success] = "単語を登録いたしました"
       redirect_to admin_questions_path 
@@ -42,7 +43,7 @@ class Admin::QuestionsController < ApplicationController
   private
 
   def question_params
-    params.require(:question).permit(:question, :description, question_similar_words_attributes: [:similar_word, :id, :_destroy])
+    params.require(:question).permit(:question, :description, question_similar_words_attributes: [:similar_word])
   end
 
   def question_search_params
