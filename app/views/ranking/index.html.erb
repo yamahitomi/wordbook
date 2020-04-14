@@ -1,33 +1,34 @@
-<p><%= link_to 'Main Menu', wordbooks_path %></p>
-【ユーザー：<%= current_user.name %>】
-【ユーザーID：<%= current_user.id %>】
+<h1 class="uk-heading-line uk-text-center margin-4"><span>Ranking</span></h1>
+  【ユーザー：<%= current_user.name %>】
+  【ユーザーID：<%= current_user.id %>】
 <% if params[:completed] %>
-<p>お疲れ様でした！<p>
-<p>あなたの成績は、50問中、<%= @user_correct_answer.to_i %>問正解、正解率<%= current_user.highest_rate %>％で<%= @user_ranking %>位でした！！<p>
+  <div uk-alert>
+    お疲れ様でした！
+    あなたの成績は、50問中、<%= current_user.correct_answer_count.to_i %>問正解、正解率<%= current_user.highest_rate %>％で<%= current_user.get_rank %>位でした！！
+  </div>
 <% end %>
-
-<h1>Ranking</h1>
 <div id="result"></div>
-
-<table id="targetTable">
-  <thead>
-    <tr>
-      <th>順位</th>
-      <th>名前</th>
-      <th>正解率</th>
-    </tr>
-  </thead>
-  <tbody>
-  <% @users.each.with_index(1) do |user, i| %>
-    <tr class="<%= 'red' if user.id == current_user.id %>">
-      <td><%= i %>位</td>
-      <td><%= user.name%></td>
-      <td><%= user.highest_rate%>％</td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
-
-<%# sessyionのユーザーネームと@usernameがおなじものは赤い色にする %>
-<%# 単語帳から遷移してきたら、画面上部にメッセージを表示する %>
-　<%# ・必要な値 → 正解数(フロント)、正解率(フロント)、順位(どうやって？)  %>
+<div>
+  <table id="targetTable" class="uk-table uk-table-striped">
+    <thead>
+      <tr>
+        <th>順位</th>
+        <th>名前</th>
+        <th>正解率</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% prev = "" %>
+    <% rank = 0 %>
+    <% @users.each.with_index(0) do |user, i| %>
+    <% rank = i + 1 unless user.highest_rate == prev %>
+      <tr class="<%= 'red' if user.id == current_user.id %>">
+        <td><%= rank %>位</td>
+        <td><%= user.name %></td>
+        <td><%= user.highest_rate %>％</td>
+      </tr>
+      <% prev = user.highest_rate %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

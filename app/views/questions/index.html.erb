@@ -1,18 +1,29 @@
 <%= javascript_pack_tag 'question' %>
-<p><%= link_to 'Main Menu', wordbooks_path %></p>
+
 <div id="result"></div>
-<h1>単語帳</h1>
-<p>50問中：第<span id="span1"></span>問</p>
-<h3>問題</h3>
-<div>
-  <p id="one_question"></p>
-  【類似単語】
+<h1 class="uk-heading-line uk-text-center"><span>単語帳</span></h1>
+<dt class="uk-flex uk-flex-center margin-5">50問中：第<span id="span1"></span>問</dt>
+<div class="uk-child-width-expand@s" uk-grid>
+    <div class="uk-grid-item-match">
+        <div class="uk-card uk-card-default uk-card-body">
+            <h3>問題</h3>
+            <p id="one_question"></p>
+        </div>
+    </div>
+</div>
+<div uk-grid>
+  <h5 class="uk-text-small"> 類似単語 </h5>
   <div id="similar_word"></div>
 </div>
-<h3>回答</h3>
-<div>
-  <form id="description_id"></form>
+<div class="uk-child-width-expand@s" uk-grid>
+    <div class="uk-grid-item-match">
+        <div class="uk-card uk-card-default uk-card-body">
+            <h3>解答</h3>
+            <form id="description_id"></form>
+        </div>
+    </div>
 </div>
-<div>
-  <button type="button" id="button">button</button>
-<div>
+
+<div class="margin-5">
+  <button type="button" id="button" class = "uk-button uk-button-primary uk-button-large">解答する</button>
+</div>

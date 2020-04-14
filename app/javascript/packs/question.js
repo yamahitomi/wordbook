@@ -41,7 +41,7 @@ window.onload = function(){
       //Ajax通信
       //セッションの正解数をcontroller側へ渡す
       var myHeaders = new Headers({ "Content-type" : "application/json" });
-      myHeaders.append('X-CSRF-Token', "P7qiN53QfDGbHjCXdV8BzL8McxgT1lBkXE3WpjP7taydWrF7d+xkZi+b9fG9TC13IMy61jmGK8pzhmdAoHjlZA==");
+      myHeaders.append("X-CSRF-Token", getCsrfToken());
       fetch('/users/api',{
         method: 'POST',
         body: JSON.stringify({ answer_count: window.sessionStorage.getItem('correct_answer_count')}),
@@ -69,7 +69,6 @@ window.onload = function(){
 const outputQuestion = (jsonData, Qcnt) => {
   const question = document.getElementById('one_question');
   const similar_word = document.getElementById('similar_word');
-  // const question = questions[Qcnt -1] // questionNum 番目の問題を取り出せる
   question.textContent = jsonData[Qcnt][1];
   similar_word.textContent = jsonData[Qcnt][3];
   generateAnswers(jsonData, Qcnt)
@@ -104,7 +103,15 @@ const generateAnswers = (jsonData, Qcnt) => {
     } 
   }
 
-  // **【選択肢３つのradioボタンの作成】**
+  // 回答のradioボタンをシャッフルする
+  for (var i = descriptionArr.length -1; i > 0; i--){
+    var r = Math.floor(Math.random() * (i+1));
+    var tmp = descriptionArr[i];
+    descriptionArr[i] = descriptionArr[r]
+    descriptionArr[r] = tmp
+  }
+
+  // 選択肢３つのradioボタンの作成
   descriptionArr.forEach(descriptionChild => {
     const radio = createRadio("description", descriptionChild)
     const radio_label = document.createElement('label')
@@ -135,4 +142,15 @@ const checkAnswer = (answer ,correct_answer) => {
     window.sessionStorage.setItem('incorrect_answer_count', Number(incorrect_answer_count) + 1);
     alert("不正解");
   }
+}
+
+const getCsrfToken = () => {
+  const metas = document.getElementsByTagName('meta');
+  for (let meta of metas) {
+      if (meta.getAttribute('name') === 'csrf-token') {
+          console.log(meta.getAttribute('content'));
+          return meta.getAttribute('content');
+      }
+  }
+  return '';
 }

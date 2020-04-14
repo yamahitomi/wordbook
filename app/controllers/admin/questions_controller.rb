@@ -1,9 +1,10 @@
 class Admin::QuestionsController < ApplicationController
+  before_action :logged_in_user
 
   def index
     @questions = Question.all.includes(:question_similar_words)
     @search_params = question_search_params
-    @questions = Question.search(@search_params)
+    @questions = @questions.search(@search_params)
 
     if  params[:id].present?
       @question = Question.find_by(id: params[:id])
@@ -13,8 +14,8 @@ class Admin::QuestionsController < ApplicationController
   end
 
   def create
+
     @question = Question.new(question_params)
-    @question = @question.question_similar_words.build
 
     if @question.save
       flash[:success] = "単語を登録いたしました"
@@ -34,11 +35,10 @@ class Admin::QuestionsController < ApplicationController
 
   def destroy
     question = Question.find(params[:id])
-    question.destroy
+    question.destroy!
     flash[:success] = "単語を削除いたしました"
     redirect_to admin_questions_path
   end
-
 
   private
 

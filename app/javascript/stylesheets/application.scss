@@ -1,0 +1,9 @@
+@import "./_uikit";
+
+@for $i from 1 through 10 {
+  .height-#{$i} {height: 10px * $i;}
+}
+
+@for $i from 1 through 10 {
+  .margin-#{$i} {margin: 10px * $i;}
+}
