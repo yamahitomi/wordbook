@@ -21,20 +21,12 @@
     <% prev = "" %>
     <% rank = 0 %>
     <% @users.each.with_index(0) do |user, i| %>
-      <% if user.highest_rate == prev %>
-        <tr class="<%= 'red' if user.id == current_user.id %>">
-          <td><%= rank %>位</td>
-          <td><%= user.name %></td>
-          <td><%= user.highest_rate %>％</td>
-        </tr>
-      <% else %>
-        <% rank = i + 1 %>
-        <tr class="<%= 'red' if user.id == current_user.id %>">
-          <td><%= rank %>位</td>
-          <td><%= user.name %></td>
-          <td><%= user.highest_rate %>％</td>
-        </tr>
-      <% end %>
+    <% rank = i + 1 unless user.highest_rate == prev %>
+      <tr class="<%= 'red' if user.id == current_user.id %>">
+        <td><%= rank %>位</td>
+        <td><%= user.name %></td>
+        <td><%= user.highest_rate %>％</td>
+      </tr>
       <% prev = user.highest_rate %>
     <% end %>
     </tbody>
